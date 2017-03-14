@@ -37,14 +37,16 @@ chroot /home/kali/kaliroot sh -c 'apt-get update && apt-get --force-yes -y insta
 set +e
 chroot /home/kali/kaliroot sh -c 'apt-get -y install sudo kali-linux' # Install kali base system
 chroot /home/kali/kaliroot sh -c 'apt-get -y install kali-linux' # Install twice, just in case...
-# Modify user to chroot
-cp bootkali /home/kali/bootkali
-chmod +x /home/kali/bootkali
-usermod -s /home/kali/bootkali kali
-# Allow chroot privs to kali
-echo "" >> /etc/sudoers
-echo "# Allow Kali Chroot" >> /etc/sudoers
-echo "kali ALL=NOPASSWD: /usr/sbin/chroot /home/kali/kaliroot" >> /etc/sudoers
+# Create bootkali and modify user to chroot
+rm /tmp/bootkali_tmp.c
+echo "#define chrootcommand \"sh -c '`which chroot` /home/kali/kaliroot'\"" > /tmp/bootkali_tmp.c
+echo "int kaliuid = `sudo -u kali id -u`;" >> /tmp/bootkali_tmp.c
+cat bootkali.c >> /tmp/bootkali_tmp.c
+gcc /tmp/bootkali_tmp.c -o /home/kali/bootkali
+chmod 4755 /home/kali/bootkali
+rm /tmp/bootkali_tmp.c
+usermod -s /bin/bash kali
+echo "exec /home/kali/bootkali" > /home/kali/.bashrc
 # Final message
 echo "Done. Use sudo su kali to chroot into kali"
 echo "Note: Setting a password for the kali user is not a good idea."
