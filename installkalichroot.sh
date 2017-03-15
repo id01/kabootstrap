@@ -47,6 +47,11 @@ chmod 4755 /home/kali/bootkali
 rm /tmp/bootkali_tmp.c
 usermod -s /bin/bash kali
 echo "exec /home/kali/bootkali" > /home/kali/.bashrc
+# Update /etc/fstab
+echo -e "\n" >> /etc/fstab
+echo "# Kali" >> /etc/fstab
+echo -e "/proc\t/home/kali/kaliroot/proc none defaults,bind 0 0" >> /etc/fstab
+echo -e "/sys\t/home/kali/kaliroot/sys none defaults,bind 0 0" >> /etc/fstab
 # Final message
 echo "Done. Use sudo su kali to chroot into kali"
 echo "Note: Setting a password for the kali user is not a good idea."
