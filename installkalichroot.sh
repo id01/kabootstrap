@@ -39,7 +39,7 @@ chroot /home/kali/kaliroot sh -c 'apt-get -y install sudo kali-linux' # Install 
 chroot /home/kali/kaliroot sh -c 'apt-get -y install kali-linux' # Install twice, just in case...
 # Create bootkali and modify user to chroot
 rm /tmp/bootkali_tmp.c
-echo "#define chrootcommand \"sh -c '`which chroot` /home/kali/kaliroot'\"" > /tmp/bootkali_tmp.c
+echo "#define chrootpath \"`which chroot`\"" > /tmp/bootkali_tmp.c
 echo "int kaliuid = `sudo -u kali id -u`;" >> /tmp/bootkali_tmp.c
 cat bootkali.c >> /tmp/bootkali_tmp.c
 gcc /tmp/bootkali_tmp.c -o /home/kali/bootkali

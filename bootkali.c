@@ -9,7 +9,6 @@ int main()
 	int myuid = getuid();
 	if (myuid == kaliuid || myuid == 0) { setuid(0); } else { puts("Permission denied."); return 1; }
 	puts("Entering kali chroot...");
-	int result = system(chrootcommand);
-	puts("Kali chroot terminated.");
-	return result;
+	char *const argvs[] = {chrootpath, "/home/kali/kaliroot", NULL};
+	execv(chrootpath, argvs);
 }

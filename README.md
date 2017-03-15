@@ -5,7 +5,7 @@ This is a simple script to install a kali chroot on a laptop or PC
 ## Usage
 To install:
 ```
-./installkalichroot.sh # Then wait... For a very, long time.
+sudo ./installkalichroot.sh # Then wait... For a very, long time.
 ```
 To start kali chroot:
 ```
