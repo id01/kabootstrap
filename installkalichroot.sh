@@ -41,7 +41,7 @@ chroot /home/kali/kaliroot sh -c 'apt-get -y install sudo kali-linux' # Install 
 chroot /home/kali/kaliroot sh -c 'apt-get -y install kali-linux' # Install twice, just in case...
 
 # Update Locales
-chroot /home/kali/kaliroot sh -c 'locale-gen "en_US.UTF-8"; echo "LANG=en_US.UTF-8" >> /etc/default/locale'
+chroot /home/kali/kaliroot sh -c 'locale-gen --purge "en_US.UTF-8"; echo "LANG=en_US.UTF-8" >> /etc/default/locale'
 
 # Create bootkali and modify user to chroot
 rm /tmp/bootkali_tmp.c
