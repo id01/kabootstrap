@@ -45,10 +45,10 @@ chroot /home/kali/kaliroot sh -c 'locale-gen --purge "en_US.UTF-8"; echo "LANG=e
 
 # Create bootkali and modify user to chroot
 rm /tmp/bootkali_tmp.c
-echo "#define chrootcommand \"sh -c '`which chroot` /home/kali/kaliroot'\"" > /tmp/bootkali_tmp.c
+echo "#define CHROOTPATH \"/home/kali/kaliroot\"" > /tmp/bootkali_tmp.c
 xhost | grep "access control disabled" 2>&1 >/dev/null
 echo "#define usesxhost $?" >> /tmp/bootkali_tmp.c
-echo "int kaliuid = `sudo -u kali id -u`;" >> /tmp/bootkali_tmp.c
+echo "const int kaliuid = `sudo -u kali id -u`;" >> /tmp/bootkali_tmp.c
 cat bootkali.c >> /tmp/bootkali_tmp.c
 gcc /tmp/bootkali_tmp.c -o /home/kali/bootkali
 chmod 4755 /home/kali/bootkali
