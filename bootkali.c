@@ -2,22 +2,24 @@
 #include <stdlib.h>
 #include <unistd.h>
 
-void cleanupxhost() { system("/usr/bin/xhost -local:"); }
+#define NEWXAUTH "/root/.Xauthority"
 
 // Do not compile this outside of the installkalichroot.sh script. It won't work.
+// Note that NEWXAUTH and $XAUTHORITY must be on the same filesystem.
 // Nifty little binary that doesn't need changes to sudo :D
 int main()
 {
 	// Verify that user either root or kali
 	int myuid = getuid();
 	if (myuid == kaliuid || myuid == 0) { setuid(0); } else { puts("Permission denied."); return 1; }
-	// Allow xhost connection from local
-	if (usesxhost == 1) { system("/usr/bin/xhost +local:"); atexit(cleanupxhost); }
-	// Run chroot, wait for exit
+#ifdef USESXAUTH
+	// Hard link .Xauthority to chroot and set $XAUTHORITY in chroot
+	link(getenv("XAUTHORITY"), CHROOTPATH NEWXAUTH);
+	setenv("XAUTHORITY", NEWXAUTH, 1);
+#endif
+	// Run chroot
 	if (chroot(CHROOTPATH) != 0) { puts("Chroot Failed."); return 1; }
 	chdir("/");
-	system("/bin/bash");
-	puts("Exitted Kali chroot.");
-	// Exit
-	exit(EXIT_SUCCESS);
+	// Switch to bash in chroot
+	execl("/bin/bash", "/bin/bash", NULL);
 }

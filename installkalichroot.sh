@@ -43,12 +43,18 @@ chroot /home/kali/kaliroot sh -c 'apt-get -y install kali-linux' # Install twice
 # Update Locales
 chroot /home/kali/kaliroot sh -c 'locale-gen --purge "en_US.UTF-8"; echo "LANG=en_US.UTF-8" >> /etc/default/locale'
 
-# Create bootkali and modify user to chroot
+# Create bootkali and modify user to chroot. Enable xauthority and set the settings if it is enabled
 rm /tmp/bootkali_tmp.c
 echo "#define CHROOTPATH \"/home/kali/kaliroot\"" > /tmp/bootkali_tmp.c
-xhost | grep "access control disabled" 2>&1 >/dev/null
-echo "#define usesxhost $?" >> /tmp/bootkali_tmp.c
-echo "const int kaliuid = `sudo -u kali id -u`;" >> /tmp/bootkali_tmp.c
+while true; do
+	read -p "Allow GUI from chroot using XAUTHORITY [Y/n]? " USEXAUTH
+	case $USEXAUTH in
+		[Yy]* ) echo "#define USESXAUTH" >> /tmp/bootkali_tmp.c; break;;
+		[Nn]* ) break;;
+		* ) echo "Please answer yes or no.";;
+	esac
+done
+echo "const int kaliuid = `id -u kali`;" >> /tmp/bootkali_tmp.c
 cat bootkali.c >> /tmp/bootkali_tmp.c
 gcc /tmp/bootkali_tmp.c -o /home/kali/bootkali
 chmod 4755 /home/kali/bootkali
